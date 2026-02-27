@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>📱 Mobile Reporter · map & media</title>
+    <!-- Leaflet (OpenStreetMap) & Font Awesome -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #1a1e2b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 12px;
+        }
+
+        /* mobile card container */
+        #app-wrapper {
+            width: 100%;
+            max-width: 400px;
+            background: #f8fafd;
+            border-radius: 32px 32px 28px 28px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1) inset;
+            overflow: hidden;
+            backdrop-filter: blur(2px);
+            height: 680px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* screens */
+        .screen {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #f5f7fb;
+            transition: transform 0.2s ease;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* status bar / header */
+        .app-header {
+            background: #ffffffdd;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 20px 20px 12px 20px;
+            border-bottom: 1px solid #e9ecf0;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #1f2a3f;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .app-header i {
+            font-size: 1.3rem;
+            color: #2e7bff;
+        }
+
+        .app-header .title {
+            font-size: 1.3rem;
+            letter-spacing: -0.3px;
+            font-weight: 600;
+        }
+
+        .sign-out-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #7c8ca0;
+            padding: 6px;
+        }
+
+        /* scrollable content */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            scrollbar-width: thin;
+        }
+
+        /* card style */
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 20px 16px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0,0,0,0.05);
+            border: 1px solid #f0f3f8;
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #5d6e85;
+            margin-bottom: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* camera preview */
+        .camera-preview {
+            background: #232b36;
+            border-radius: 20px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            position: relative;
+            margin-bottom: 14px;
+            border: 2px solid white;
+            box-shadow: 0 8px 14px rgba(0,20,40,0.2);
+        }
+
+        .camera-preview video, .camera-preview img, .camera-preview video[controls] {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #191e26;
+            display: block;
+        }
+
+        .preview-overlay {
+            position: absolute;
+            bottom: 8px;
+            right: 12px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(6px);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 0.5px solid rgba(255,255,255,0.3);
+        }
+
+        .media-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .btn {
+            flex: 1 1 auto;
+            background: #f0f4fc;
+            border: none;
+            border-radius: 60px;
+            padding: 14px 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1f2937;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: all 0.15s;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #1f2a3f;
+            color: white;
+            border: none;
+            box-shadow: 0 8px 18px rgba(20, 80, 200, 0.15);
+        }
+
+        .btn-primary i {
+            color: #9bbaff;
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+
+        .map-container {
+            height: 190px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid white;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .coordinate-row {
+            background: #f2f6fe;
+            border-radius: 40px;
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            font-family: 'SF Mono', monospace;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 10px 0 4px;
+            border: 1px solid #d9e2ef;
+        }
+
+        .coordinate-row i {
+            color: #2e7bff;
+        }
+
+        .location-btn {
+            background: white;
+            border: 1px solid #cdddf5;
+            border-radius: 40px;
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.1s;
+            margin-right: 6px;
+        }
+
+        /* submit button */
+        .submit-btn {
+            background: #0f172a;
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 8px;
+            margin-bottom: 6px;
+            box-shadow: 0 12px 24px -8px #0f172a80;
+            cursor: pointer;
+            border: 1px solid #2d3a5e;
+        }
+
+        /* sign-in screen */
+        #signin-screen {
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            background: linear-gradient(145deg, #f0f5fe, #e6ecf8);
+        }
+
+        .signin-card {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(18px);
+            width: 100%;
+            border-radius: 48px;
+            padding: 32px 24px;
+            box-shadow: 0 30px 40px -20px rgba(0,20,50,0.4);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .signin-card h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #0b1b33;
+        }
+
+        .signin-input {
+            background: rgba(255,255,255,0.7);
+            border: 1px solid #bdc9dc;
+            border-radius: 44px;
+            padding: 18px 22px;
+            width: 100%;
+            font-size: 1rem;
+            margin: 12px 0;
+            outline: none;
+        }
+
+        .signin-btn {
+            background: #121f3f;
+            color: white;
+            border: none;
+            border-radius: 44px;
+            padding: 18px;
+            width: 100%;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-top: 22px;
+            cursor: pointer;
+        }
+
+        .small-note {
+            color: #4a5b73;
+            text-align: center;
+            margin-top: 18px;
+        }
+    </style>
+</head>
+<body>
+<div id="app-wrapper">
+    <!-- SIGN IN SCREEN (mock) -->
+    <div id="signin-screen" class="screen">
+        <div class="signin-card">
+            <i class="fas fa-map-pin" style="font-size: 2.6rem; color: #1e3c72;"></i>
+            <h2>Reporter</h2>
+            <p style="color:#335; margin-bottom: 24px;">sign in with any credentials</p>
+            <input class="signin-input" type="text" placeholder="username" value="demo" id="mock-username">
+            <input class="signin-input" type="password" placeholder="password" value="****">
+            <button class="signin-btn" id="signin-button"><i class="fas fa-arrow-right-to-bracket"></i> Sign in</button>
+            <div class="small-note"> <i class="far fa-circle-check"></i> no server – mock signin</div>
+        </div>
+    </div>
+
+    <!-- MAIN APP SCREEN (after sign in) -->
+    <div id="app-screen" class="screen hidden">
+        <!-- header with sign out -->
+        <div class="app-header">
+            <i class="fas fa-chevron-left" style="opacity:0.4; pointer-events:none;"></i>
+            <span class="title">📸 new report</span>
+            <button class="sign-out-btn" id="signout-button"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+
+        <!-- main content -->
+        <div class="content" id="app-content">
+            <!-- camera / media card -->
+            <div class="card">
+                <div class="card-title"><i class="fas fa-camera"></i> capture photo or video</div>
+                <!-- live preview / stream -->
+                <div class="camera-preview" id="camera-live-container">
+                    <video id="camera-stream" autoplay playsinline muted></video>
+                    <div class="preview-overlay" id="live-indicator">LIVE</div>
+                </div>
+                <!-- captured media preview (still / recorded) -->
+                <div id="captured-preview" style="display: none;" class="camera-preview"></div>
+
+                <div class="media-actions">
+                    <button class="btn" id="take-photo-btn"><i class="fas fa-camera-retro"></i> photo</button>
+                    <button class="btn" id="record-video-btn"><i class="fas fa-circle"></i> record</button>
+                    <button class="btn" id="clear-media-btn"><i class="fas fa-trash-can"></i> clear</button>
+                </div>
+                <p style="font-size:0.8rem; color:#7f8b9f; margin-top: 8px;">
+                    <i class="far fa-image"></i> captured media will appear above
+                </p>
+            </div>
+
+            <!-- map & location card -->
+            <div class="card">
+                <div class="card-title"><i class="fas fa-map-location-dot"></i> pin location</div>
+                <div id="map" class="map-container"></div>
+                <div class="coordinate-row" id="coord-display">
+                    <i class="fas fa-location-dot"></i>
+                    <span id="latlng-text">51.505, -0.09</span>
+                    <span style="color:#64748b;">(drag pin)</span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="location-btn" id="use-my-location"><i class="fas fa-crosshairs"></i> my location</button>
+                    <button class="location-btn" id="reset-map-center"><i class="fas fa-globe"></i> reset</button>
+                </div>
+                <p style="font-size:0.8rem; color:#7f8b9f; margin-top:12px;">
+                    <i class="far fa-compass"></i> tap map or drag marker
+                </p>
+            </div>
+
+            <!-- download (instead of submit) -->
+            <button class="submit-btn" id="download-report-btn">
+                <i class="fas fa-download"></i> download report
+            </button>
+            <p style="text-align:center; font-size:0.75rem; color:#8a99b0; padding-bottom: 8px;">
+                <i class="far fa-circle-check"></i> image/video saved locally
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- leaflet & scripts -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function() {
+    // ----- DOM elements -----
+    const signinScreen = document.getElementById('signin-screen');
+    const appScreen = document.getElementById('app-screen');
+    const signinBtn = document.getElementById('signin-button');
+    const signoutBtn = document.getElementById('signout-button');
+
+    // Mock sign in/out
+    signinBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        signinScreen.classList.add('hidden');
+        appScreen.classList.remove('hidden');
+        // initialize camera + map when app becomes visible
+        initApp();
+    });
+
+    signoutBtn.addEventListener('click', () => {
+        appScreen.classList.add('hidden');
+        signinScreen.classList.remove('hidden');
+        // stop camera stream if any
+        if (window.localStream) {
+            window.localStream.getTracks().forEach(track => track.stop());
+            window.localStream = null;
+        }
+        // reset UI elements
+        resetAppUI();
+    });
+
+    // ----- app state -----
+    let map, marker;
+    let currentLat = 51.505, currentLng = -0.09; // default (london eye)
+    let mediaBlob = null;          // captured photo or video blob
+    let mediaType = null;          // 'image' or 'video'
+    let mediaPreviewUrl = null;    
+    let isRecording = false;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let cameraStream = null;
+    const videoElement = document.getElementById('camera-stream');
+    const liveIndicator = document.getElementById('live-indicator');
+    const capturedPreviewDiv = document.getElementById('captured-preview');
+    const cameraLiveContainer = document.getElementById('camera-live-container');
+    const latlngSpan = document.getElementById('latlng-text');
+    const takePhotoBtn = document.getElementById('take-photo-btn');
+    const recordBtn = document.getElementById('record-video-btn');
+    const clearMediaBtn = document.getElementById('clear-media-btn');
+    const downloadBtn = document.getElementById('download-report-btn');
+    const useMyLocationBtn = document.getElementById('use-my-location');
+    const resetMapBtn = document.getElementById('reset-map-center');
+
+    // helper to update coordinate display
+    function updateCoordDisplay(lat, lng) {
+        latlngSpan.innerText = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    }
+
+    // initialise map (only once)
+    function initMap() {
+        if (map) return;
+        map = L.map('map').setView([currentLat, currentLng], 13);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        // draggable marker
+        marker = L.marker([currentLat, currentLng], { draggable: true }).addTo(map);
+        marker.on('dragend', function(e) {
+            const pos = marker.getLatLng();
+            currentLat = pos.lat;
+            currentLng = pos.lng;
+            updateCoordDisplay(currentLat, currentLng);
+        });
+
+        map.on('click', function(e) {
+            const { lat, lng } = e.latlng;
+            marker.setLatLng([lat, lng]);
+            currentLat = lat;
+            currentLng = lng;
+            updateCoordDisplay(currentLat, currentLng);
+        });
+
+        updateCoordDisplay(currentLat, currentLng);
+    }
+
+    // camera setup
+    async function startCamera() {
+        if (cameraStream) return cameraStream;
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            cameraStream = stream;
+            window.localStream = stream;
+            videoElement.srcObject = stream;
+            return stream;
+        } catch (err) {
+            alert('Camera access needed. Please grant permissions.');
+            console.error(err);
+            return null;
+        }
+    }
+
+    // stop camera
+    function stopCamera() {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+            cameraStream = null;
+            window.localStream = null;
+        }
+    }
+
+    // reset captured media preview
+    function resetMediaPreview() {
+        // hide captured preview, show live
+        capturedPreviewDiv.style.display = 'none';
+        capturedPreviewDiv.innerHTML = ''; // remove any content
+        cameraLiveContainer.style.display = 'block';
+        liveIndicator.innerText = 'LIVE';
+        mediaBlob = null;
+        mediaType = null;
+        if (mediaPreviewUrl) {
+            URL.revokeObjectURL(mediaPreviewUrl);
+            mediaPreviewUrl = null;
+        }
+    }
+
+    // show captured media (image or video) in preview box
+    function showCapturedMedia(blob, type) {
+        mediaBlob = blob;
+        mediaType = type;
+        const url = URL.createObjectURL(blob);
+        mediaPreviewUrl = url;
+
+        capturedPreviewDiv.style.display = 'block';
+        capturedPreviewDiv.innerHTML = ''; // clear
+
+        if (type === 'image') {
+            const img = document.createElement('img');
+            img.src = url;
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'cover';
+            capturedPreviewDiv.appendChild(img);
+            liveIndicator.innerText = 'PHOTO';
+        } else if (type === 'video') {
+            const vid = document.createElement('video');
+            vid.src = url;
+            vid.controls = true;
+            vid.style.width = '100%';
+            vid.style.height = '100%';
+            vid.style.objectFit = 'contain';
+            vid.autoplay = false;
+            capturedPreviewDiv.appendChild(vid);
+            liveIndicator.innerText = 'VIDEO';
+        }
+        // hide live feed preview layer? Keep both: live is hidden behind? We'll keep live container visible but covered? Better hide live container? 
+        cameraLiveContainer.style.display = 'none';
+    }
+
+    // take photo
+    async function takePhoto() {
+        if (!cameraStream) await startCamera();
+        if (!cameraStream) return;
+        const video = videoElement;
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob((blob) => {
+            showCapturedMedia(blob, 'image');
+        }, 'image/jpeg', 0.9);
+    }
+
+    // video recording
+    function startRecording(stream) {
+        recordedChunks = [];
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.ondataavailable = (e) => {
+            if (e.data.size > 0) recordedChunks.push(e.data);
+        };
+        mediaRecorder.onstop = () => {
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            showCapturedMedia(blob, 'video');
+            isRecording = false;
+            recordBtn.innerHTML = '<i class="fas fa-circle"></i> record';
+            recordBtn.classList.remove('btn-danger');
+        };
+        mediaRecorder.start();
+        isRecording = true;
+        recordBtn.innerHTML = '<i class="fas fa-stop"></i> stop';
+        recordBtn.classList.add('btn-danger');
+    }
+
+    // stop recording
+    function stopRecording() {
+        if (mediaRecorder && isRecording) {
+            mediaRecorder.stop();
+        }
+    }
+
+    // toggle recording
+    async function toggleRecording() {
+        if (isRecording) {
+            stopRecording();
+            return;
+        }
+        // start recording
+        if (!cameraStream) await startCamera();
+        if (!cameraStream) return;
+        // ensure we have audio+video
+        startRecording(cameraStream);
+    }
+
+    // clear media
+    function clearMedia() {
+        resetMediaPreview();
+        cameraLiveContainer.style.display = 'block';
+        liveIndicator.innerText = 'LIVE';
+    }
+
+    // download current media with location in filename
+    function downloadMedia() {
+        if (!mediaBlob) {
+            alert('No photo or video captured. Take one first.');
+            return;
+        }
+        const ext = mediaType === 'image' ? '.jpg' : '.webm';
+        const latStr = currentLat.toFixed(5);
+        const lngStr = currentLng.toFixed(5);
+        const timestamp = new Date().toISOString().slice(0,19).replace(/:/g, '-');
+        const filename = `report_${latStr}_${lngStr}_${timestamp}${ext}`;
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(mediaBlob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    }
+
+    // set marker to current location
+    function setToCurrentLocation() {
+        if (!navigator.geolocation) {
+            alert('Geolocation not supported');
+            return;
+        }
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                const { latitude, longitude } = pos.coords;
+                currentLat = latitude;
+                currentLng = longitude;
+                marker.setLatLng([currentLat, currentLng]);
+                map.setView([currentLat, currentLng], 15);
+                updateCoordDisplay(currentLat, currentLng);
+            },
+            (err) => alert('Could not get location: ' + err.message),
+            { enableHighAccuracy: true }
+        );
+    }
+
+    // reset map to default (optional)
+    function resetMapDefault() {
+        currentLat = 51.505;
+        currentLng = -0.09;
+        marker.setLatLng([currentLat, currentLng]);
+        map.setView([currentLat, currentLng], 13);
+        updateCoordDisplay(currentLat, currentLng);
+    }
+
+    // reset whole UI on sign out
+    function resetAppUI() {
+        clearMedia();
+        if (map) {
+            resetMapDefault();
+        }
+        // stop camera
+        stopCamera();
+    }
+
+    // main init after sign in
+    async function initApp() {
+        initMap();          // idempotent
+        await startCamera();
+        // fresh state: no captured media
+        clearMedia();
+    }
+
+    // ----- attach event listeners -----
+    takePhotoBtn.addEventListener('click', takePhoto);
+    recordBtn.addEventListener('click', toggleRecording);
+    clearMediaBtn.addEventListener('click', clearMedia);
+    downloadBtn.addEventListener('click', downloadMedia);
+    useMyLocationBtn.addEventListener('click', setToCurrentLocation);
+    resetMapBtn.addEventListener('click', resetMapDefault);
+
+    // Ensure map resizes when shown (Leaflet bug)
+    const observer = new ResizeObserver(() => {
+        if (map) map.invalidateSize();
+    });
+    observer.observe(document.getElementById('app-screen'));
+
+    // preload: if by any chance appScreen becomes visible without signin (shouldn't)
+    // but we handle signin only.
+})();
+</script>
+</body>
+</html>

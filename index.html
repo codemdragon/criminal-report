@@ -201,7 +201,7 @@
         }
 
         .media-actions.secondary {
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
         }
 
         .btn {
@@ -922,6 +922,9 @@
                                 <button class="btn" id="fs-open-btn"><i class="fas fa-expand"></i> Fullscreen</button>
                                 <button class="btn" id="flip-camera-btn"><i class="fas fa-camera-rotate"></i>
                                     Flip</button>
+                                <button class="btn" id="upload-media-btn"><i class="fas fa-upload"></i> Upload</button>
+                                <input type="file" id="upload-media-input" accept="image/*,video/*" multiple
+                                    style="display: none;">
                                 <button class="btn" id="clear-media-btn" style="color:#ef4444;"><i
                                         class="fas fa-trash-can"></i> Clear All</button>
                             </div>
@@ -1144,6 +1147,8 @@
             const clearMediaBtn = document.getElementById('clear-media-btn');
             const flipCameraBtn = document.getElementById('flip-camera-btn');
             const fsOpenBtn = document.getElementById('fs-open-btn');
+            const uploadMediaBtn = document.getElementById('upload-media-btn');
+            const uploadMediaInput = document.getElementById('upload-media-input');
 
             // Camera UI (Fullscreen)
             const fsCameraView = document.getElementById('fs-camera-view');
@@ -1428,6 +1433,23 @@
                 closeFullscreen();
             }
 
+            function handleMediaUpload(event) {
+                const files = event.target.files;
+                if (!files || files.length === 0) return;
+
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const type = file.type.startsWith('video/') ? 'video' : 'image';
+                    const url = URL.createObjectURL(file);
+                    const id = 'media_upload_' + Date.now() + '_' + Math.floor(Math.random() * 1000) + '_' + i;
+
+                    capturedMedia.push({ blob: file, type, url, id });
+                }
+
+                renderCapturedGallery();
+                event.target.value = ''; // Reset input so same file can be uploaded again if needed
+            }
+
             function renderCapturedGallery() {
                 if (capturedMedia.length === 0) {
                     capturedPreviewDiv.style.display = 'none';
@@ -1638,6 +1660,8 @@
             clearMediaBtn.addEventListener('click', clearMedia);
             flipCameraBtn.addEventListener('click', toggleCameraFacing);
             fsOpenBtn.addEventListener('click', openFullscreen);
+            uploadMediaBtn.addEventListener('click', () => uploadMediaInput.click());
+            uploadMediaInput.addEventListener('change', handleMediaUpload);
 
             // Fullscreen buttons
             fsCloseBtn.addEventListener('click', closeFullscreen);

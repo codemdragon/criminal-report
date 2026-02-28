@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Criminal Reporter</title>
+    <title>Mobile Reporter · Map & Media</title>
 
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#1a1e2b">
@@ -15,7 +15,7 @@
 
     <!-- Inline Manifest for single-file PWA compatibility -->
     <link rel="manifest"
-        href="data:application/manifest+json,%7B%22name%22%3A%22Criminal%20Reporter%22%2C%22short_name%22%3A%22Reporter%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%231a1e2b%22%2C%22theme_color%22%3A%22%231a1e2b%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzFlM2M3MiIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjMwIiBmaWxsPSIjZmZmIi8%2BPC9zdmc%2B%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+        href="data:application/manifest+json,%7B%22name%22%3A%22Mobile%20Reporter%22%2C%22short_name%22%3A%22Reporter%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%231a1e2b%22%2C%22theme_color%22%3A%22%231a1e2b%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzFlM2M3MiIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjMwIiBmaWxsPSIjZmZmIi8%2BPC9zdmc%2B%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
 
     <!-- Leaflet & Font Awesome -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -112,20 +112,8 @@
             flex: 1;
             overflow-y: auto;
             padding: 24px;
-            /* Extra bottom padding for the tab bar */
-            padding-bottom: calc(85px + env(safe-area-inset-bottom, 0px));
+            padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
             scrollbar-width: thin;
-        }
-
-        /* Tab Content areas */
-        .tab-content {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .tab-content.active {
-            display: flex;
         }
 
         .grid-layout {
@@ -522,80 +510,60 @@
             right: 0;
             bottom: 0;
             background: #1a1e2b;
-            z-index: 10000;
+            z-index: 999999;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
             color: white;
-            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
-        }
-
-        #preloader.hidden {
-            opacity: 0;
-            visibility: hidden;
+            transition: opacity 0.5s ease;
         }
 
         .spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-left-color: #3b82f6;
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #3b82f6;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: 20px;
         }
 
         @keyframes spin {
-            to {
+            100% {
                 transform: rotate(360deg);
             }
         }
 
-        .preloader-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        /* Bottom Tab Bar */
+        /* Bottom Nav & Settings */
         .bottom-nav {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: calc(70px + env(safe-area-inset-bottom, 0px));
             background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(15px);
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid #e9ecf0;
             display: flex;
             justify-content: space-around;
-            align-items: center;
-            padding-bottom: env(safe-area-inset-bottom, 0px);
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.03);
-            z-index: 50;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
+            padding: 10px 0 calc(10px + env(safe-area-inset-bottom, 0px)) 0;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            z-index: 10;
         }
 
         .nav-item {
-            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             color: #94a3b8;
             font-size: 0.75rem;
             font-weight: 600;
-            gap: 4px;
             cursor: pointer;
-            transition: all 0.2s;
-            height: 100%;
+            text-decoration: none;
+            flex: 1;
         }
 
         .nav-item i {
-            font-size: 1.3rem;
-            margin-bottom: 2px;
+            font-size: 1.4rem;
+            margin-bottom: 4px;
             transition: transform 0.2s;
         }
 
@@ -607,47 +575,48 @@
             transform: scale(1.1);
         }
 
-        .nav-item:active i {
-            transform: scale(0.9);
+        .main-content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
         }
 
-        /* Settings Page UI */
-        .settings-list {
+        #settings-view {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+            display: none;
+        }
+
+        #report-view {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .settings-card {
             background: white;
             border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-            border: 1px solid #f0f3f8;
-            margin-bottom: 24px;
-        }
-
-        .settings-row {
-            padding: 18px 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #f0f3f8;
         }
 
-        .settings-row:last-child {
-            border-bottom: none;
-        }
-
-        .settings-row .label {
-            font-size: 1.05rem;
-            color: #1f2937;
-            font-weight: 500;
-        }
-
-        /* iOS style toggle */
-        .toggle-switch {
+        .switch {
             position: relative;
             display: inline-block;
             width: 50px;
             height: 28px;
         }
 
-        .toggle-switch input {
+        .switch input {
             opacity: 0;
             width: 0;
             height: 0;
@@ -673,9 +642,8 @@
             left: 4px;
             bottom: 4px;
             background-color: white;
-            transition: .3s;
+            transition: .4s;
             border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         input:checked+.slider {
@@ -685,27 +653,14 @@
         input:checked+.slider:before {
             transform: translateX(22px);
         }
-
-        .signout-row {
-            color: #ef4444 !important;
-            font-weight: 600 !important;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-        }
-
-        .signout-row:active {
-            background: #fef2f2;
-        }
     </style>
 </head>
 
 <body>
-
     <!-- PRELOADER -->
     <div id="preloader">
         <div class="spinner"></div>
-        <div class="preloader-title">Criminal Reporter</div>
+        <h3 style="margin-top:20px; font-weight: 600;">Loading App...</h3>
     </div>
 
     <div id="app-wrapper">
@@ -713,8 +668,8 @@
         <!-- SIGN IN SCREEN -->
         <div id="signin-screen" class="screen">
             <div class="signin-card">
-                <i class="fas fa-shield-alt" style="font-size: 3rem; color: #2563eb; margin-bottom: 10px;"></i>
-                <h2>Criminal Reporter</h2>
+                <i class="fas fa-compass" style="font-size: 3rem; color: #2563eb; margin-bottom: 10px;"></i>
+                <h2>Reporter PWA</h2>
                 <p style="color:#64748b; margin-bottom: 24px; font-weight: 500;">Location & Media Capture</p>
                 <input class="signin-input" type="text" placeholder="Username" value="demo_user" id="mock-username">
                 <input class="signin-input" type="password" placeholder="Password" value="password">
@@ -724,123 +679,112 @@
                     Installable PWA Ready</p>
             </div>
         </div>
-
         <!-- MAIN APP SCREEN -->
         <div id="app-screen" class="screen hidden">
             <div class="app-header">
-                <span class="title" id="main-header-title"><i class="fas fa-file-alt"
-                        style="color: #2563eb; margin-right: 8px;"></i> New Report</span>
+                <span class="title" id="header-title"><i class="fas fa-file-alt"
+                        style="margin-right:8px; color:#2563eb;"></i>New Report</span>
+                <button class="sign-out-btn" id="signout-button" title="Sign Out"><i
+                        class="fas fa-sign-out-alt"></i></button>
             </div>
 
-            <div class="content" id="app-content">
-            </div>
+            <div class="main-content-wrapper">
+                <div class="content" id="report-view">
+                    <div class="grid-layout">
 
-            <div class="camera-preview" id="camera-live-container">
-                <video id="camera-stream" autoplay playsinline muted></video>
-                <div class="preview-overlay" id="live-indicator">LIVE</div>
-            </div>
+                        <!-- CAMERA / MEDIA CARD -->
+                        <div class="card">
+                            <div class="card-title">
+                                <i class="fas fa-camera"></i> Capture Media
+                            </div>
 
-            <div id="captured-preview" style="display: none;" class="camera-preview"></div>
+                            <div class="camera-preview" id="camera-live-container">
+                                <video id="camera-stream" autoplay playsinline muted></video>
+                                <div class="preview-overlay" id="live-indicator">LIVE</div>
+                            </div>
 
-            <div class="media-actions">
-                <button class="btn" id="take-photo-btn"><i class="fas fa-camera-retro"></i> Photo</button>
-                <button class="btn" id="record-video-btn"><i class="fas fa-circle" style="color:#ef4444"></i>
-                    Record</button>
-            </div>
-            <div class="media-actions secondary">
-                <button class="btn" id="fs-open-btn"><i class="fas fa-expand"></i> Fullscreen</button>
-                <button class="btn" id="flip-camera-btn"><i class="fas fa-camera-rotate"></i> Flip</button>
-                <button class="btn" id="clear-media-btn"><i class="fas fa-trash-can"></i> Clear</button>
-            </div>
-        </div>
+                            <div id="captured-preview" style="display: none;" class="camera-preview"></div>
 
-        <!-- MAP & LOCATION CARD -->
-        <div class="card" style="display: flex; flex-direction: column;">
-            <div class="card-title">
-                <i class="fas fa-map-location-dot"></i> Pin Location
-            </div>
+                            <div class="media-actions">
+                                <button class="btn" id="take-photo-btn"><i class="fas fa-camera-retro"></i>
+                                    Photo</button>
+                                <button class="btn" id="record-video-btn"><i class="fas fa-circle"
+                                        style="color:#ef4444"></i> Record</button>
+                            </div>
+                            <div class="media-actions secondary">
+                                <button class="btn" id="fs-open-btn"><i class="fas fa-expand"></i> Fullscreen</button>
+                                <button class="btn" id="flip-camera-btn"><i class="fas fa-camera-rotate"></i>
+                                    Flip</button>
+                                <button class="btn" id="clear-media-btn"><i class="fas fa-trash-can"></i> Clear</button>
+                            </div>
+                        </div>
 
-            <div id="map" class="map-container"></div>
+                        <!-- MAP & LOCATION CARD -->
+                        <div class="card" style="display: flex; flex-direction: column;">
+                            <div class="card-title">
+                                <i class="fas fa-map-location-dot"></i> Pin Location
+                            </div>
 
-            <div class="coordinate-row" id="coord-display">
-                <span><i class="fas fa-location-dot"></i> <span id="latlng-text">Loading...</span></span>
-                <span style="color:#94a3b8; font-size: 0.8rem; text-transform:uppercase;">(Draggable)</span>
-            </div>
+                            <div id="map" class="map-container"></div>
 
-            <div class="location-controls">
-                <button class="location-btn" id="use-my-location"><i class="fas fa-crosshairs"></i> Locate
-                    Me</button>
-                <button class="location-btn" id="reset-map-center"><i class="fas fa-globe"></i>
-                    Reset</button>
-            </div>
-        </div>
+                            <div class="coordinate-row" id="coord-display">
+                                <span><i class="fas fa-location-dot"></i> <span
+                                        id="latlng-text">Loading...</span></span>
+                                <span
+                                    style="color:#94a3b8; font-size: 0.8rem; text-transform:uppercase;">(Draggable)</span>
+                            </div>
 
-        <!-- SUBMIT / DOWNLOAD -->
-        <div class="full-width" style="margin-top: 10px;">
-            <button class="submit-btn" id="download-report-btn">
-                <i class="fas fa-download"></i> Save & Download Report
-            </button>
-        </div>
+                            <div class="location-controls">
+                                <button class="location-btn" id="use-my-location"><i class="fas fa-crosshairs"></i>
+                                    Locate
+                                    Me</button>
+                                <button class="location-btn" id="reset-map-center"><i class="fas fa-globe"></i>
+                                    Reset</button>
+                            </div>
+                        </div>
 
-    </div> <!-- End grid-layout -->
-    </div> <!-- End tab-report -->
+                        <!-- SUBMIT / DOWNLOAD -->
+                        <div class="full-width" style="margin-top: 10px;">
+                            <button class="submit-btn" id="download-report-btn">
+                                <i class="fas fa-download"></i> Save & Download Report
+                            </button>
+                        </div>
 
-    <!-- TAB 2: HISTORY (Placeholder) -->
-    <div id="tab-history" class="tab-content">
-        <div
-            style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; text-align: center;">
-            <i class="fas fa-history" style="font-size: 4rem; opacity: 0.2; margin-bottom: 20px;"></i>
-            <h3>History Empty</h3>
-            <p style="margin-top: 10px; max-width: 250px; font-size: 0.9rem;">Past reports will appear here.</p>
-        </div>
-    </div>
+                    </div>
+                </div>
 
-    <!-- TAB 3: SETTINGS -->
-    <div id="tab-settings" class="tab-content">
-        <div class="grid-layout">
-            <div class="card" style="padding: 0; background: transparent; box-shadow: none; border: none;">
-                <div class="settings-list">
-                    <div class="settings-row">
-                        <div class="label">Open to Fullscreen Camera</div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="auto-fs-toggle">
+                <!-- Settings View -->
+                <div id="settings-view">
+                    <h3 style="margin-bottom: 16px; color: #1f2a3f;">App Preferences</h3>
+                    <div class="settings-card"
+                        style="box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e9ecf0;">
+                        <div>
+                            <strong style="display:block; color:#0f172a; margin-bottom:4px;">Quick Camera</strong>
+                            <span style="color:#64748b; font-size: 0.85rem;">Open fullscreen camera on app
+                                startup</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="setting-auto-camera">
                             <span class="slider"></span>
                         </label>
                     </div>
                 </div>
 
-                <div class="settings-list">
-                    <div class="settings-row">
-                        <div class="label" style="color: #64748b; font-size: 0.95rem;">App Version</div>
-                        <div style="color: #94a3b8; font-size: 0.95rem;">1.0.0 (PWA)</div>
-                    </div>
-                </div>
+            </div> <!-- end main-content-wrapper -->
 
-                <div class="settings-list">
-                    <div class="settings-row signout-row" id="settings-signout-btn">
-                        <i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Sign Out
-                    </div>
+            <!-- Bottom Navigation -->
+            <div class="bottom-nav">
+                <div class="nav-item active" id="nav-report">
+                    <i class="fas fa-file-invoice"></i>
+                    <span>Report</span>
+                </div>
+                <div class="nav-item" id="nav-settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
                 </div>
             </div>
-        </div>
-    </div> <!-- End content -->
 
-    <!-- BOTTOM NAVIGATION -->
-    <div class="bottom-nav">
-        <div class="nav-item active" data-tab="report">
-            <i class="fas fa-camera"></i>
-            <span>Capture</span>
         </div>
-        <div class="nav-item" data-tab="history">
-            <i class="fas fa-clock"></i>
-            <span>History</span>
-        </div>
-        <div class="nav-item" data-tab="settings">
-            <i class="fas fa-cog"></i>
-            <span>Settings</span>
-        </div>
-    </div>
-    </div>
     </div>
 
     <!-- FULLSCREEN CAMERA OVERLAY -->
@@ -865,65 +809,86 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         (function () {
-            // --- PWA Service Worker Registration (Cache-First SW) ---
+            // --- PWA Service Worker Registration (Caching SW) ---
             if ('serviceWorker' in navigator) {
                 const swCode = `
-                    const CACHE_NAME = 'reporter-pwa-v1';
-                    const ASSETS = [
-                        './',
-                        'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
-                        'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
-                        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css'
-                    ];
-
-                    self.addEventListener('install', (e) => {
-                        self.skipWaiting();
-                        e.waitUntil(
-                            caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
-                        );
-                    });
-
-                    self.addEventListener('activate', (e) => {
-                        self.clients.claim();
-                        e.waitUntil(
-                            caches.keys().then(keys => Promise.all(
-                                keys.map(key => {
-                                    if(key !== CACHE_NAME) return caches.delete(key);
-                                })
-                            ))
-                        );
-                    });
-
-                    self.addEventListener('fetch', (e) => {
-                        if (e.request.method !== 'GET') return;
-                        e.respondWith(
-                            caches.match(e.request).then(response => {
-                                return response || fetch(e.request).then(fetchRes => {
-                                    return caches.open(CACHE_NAME).then(cache => {
-                                        if (e.request.url.startsWith('http')) {
-                                            cache.put(e.request, fetchRes.clone());
-                                        }
-                                        return fetchRes;
-                                    });
-                                });
-                            })
-                        );
-                    });
-                `;
+            const CACHE_NAME = 'reporter-cache-v1';
+            const ASSETS = [
+                '/',
+                '/index.html',
+                'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+                'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css',
+                'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+            ];
+            self.addEventListener('install', (e) => {
+                e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)));
+                self.skipWaiting();
+            });
+            self.addEventListener('activate', (e) => self.clients.claim());
+            self.addEventListener('fetch', (e) => {
+                e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
+            });
+        `;
                 const blob = new Blob([swCode], { type: 'application/javascript' });
                 const swUrl = URL.createObjectURL(blob);
-                navigator.serviceWorker.register(swUrl).catch(err => console.log('SW registration failed:', err));
+                navigator.serviceWorker.register(swUrl).catch(err => console.log('SW Registration failed:', err));
+            }
+
+            // --- Preloader & IndexedDB ---
+            window.addEventListener('load', () => {
+                const preloader = document.getElementById('preloader');
+                setTimeout(() => {
+                    preloader.style.opacity = '0';
+                    setTimeout(() => preloader.style.display = 'none', 500);
+                }, 800);
+            });
+
+            let db;
+            function initDB() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open('ReporterDB', 1);
+                    request.onupgradeneeded = (e) => {
+                        db = e.target.result;
+                        if (!db.objectStoreNames.contains('settings')) {
+                            db.createObjectStore('settings', { keyPath: 'id' });
+                        }
+                    };
+                    request.onsuccess = (e) => { db = e.target.result; resolve(); };
+                    request.onerror = (e) => reject();
+                });
+            }
+
+            function saveSetting(key, value) {
+                if (!db) return;
+                const tx = db.transaction('settings', 'readwrite');
+                tx.objectStore('settings').put({ id: key, value: value });
+            }
+
+            function getSetting(key) {
+                return new Promise((resolve) => {
+                    if (!db) return resolve(null);
+                    const tx = db.transaction('settings', 'readonly');
+                    const req = tx.objectStore('settings').get(key);
+                    req.onsuccess = () => resolve(req.result ? req.result.value : null);
+                    req.onerror = () => resolve(null);
+                });
             }
 
             // --- DOM Elements ---
             const signinScreen = document.getElementById('signin-screen');
             const appScreen = document.getElementById('app-screen');
             const signinBtn = document.getElementById('signin-button');
-            const headerTitle = document.getElementById('main-header-title');
+            const signoutBtn = document.getElementById('signout-button');
 
-            // Tabs
-            const navItems = document.querySelectorAll('.nav-item');
-            const tabContents = document.querySelectorAll('.tab-content');
+            // App Navigation
+            const navReport = document.getElementById('nav-report');
+            const navSettings = document.getElementById('nav-settings');
+            const reportView = document.getElementById('report-view');
+            const settingsView = document.getElementById('settings-view');
+            const headerTitle = document.getElementById('header-title');
+
+            // Settings Elements
+            const settingAutoCamera = document.getElementById('setting-auto-camera');
 
             // Camera UI (Inline)
             const videoElement = document.getElementById('camera-stream');
@@ -963,115 +928,53 @@
             let cameraStream = null;
             let facingMode = 'environment'; // default to back camera
 
-            // --- Navigation & Tabs ---
+            // --- Init Database ---
+            initDB().then(async () => {
+                const autoCamera = await getSetting('autoCamera');
+                if (autoCamera !== null) {
+                    settingAutoCamera.checked = autoCamera;
+                }
+            });
+
+            // --- Navigation ---
             signinBtn.addEventListener('click', async (e) => {
                 e.preventDefault();
                 signinScreen.classList.add('hidden');
                 appScreen.classList.remove('hidden');
-                initApp();
+                await initApp();
 
-                // Check settings and auto-open fullscreen if enabled
-                const autoFs = await getSetting('autoFullscreenCamera');
-                if (autoFs) {
-                    navItems[0].click(); // ensure we are on report tab
-                    setTimeout(() => {
-                        openFullscreen();
-                    }, 300); // slight delay for smooth transition
+                if (settingAutoCamera.checked) {
+                    openFullscreen();
                 }
             });
 
-            // Tab Switching Logic
-            navItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    // Update active nav styles
-                    navItems.forEach(nav => nav.classList.remove('active'));
-                    item.classList.add('active');
-
-                    // Show corresponding tab content
-                    const targetTabId = 'tab-' + item.dataset.tab;
-                    tabContents.forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    document.getElementById(targetTabId).classList.add('active');
-
-                    // Update header title based on tab
-                    if (item.dataset.tab === 'report') {
-                        headerTitle.innerHTML = '<i class="fas fa-file-alt" style="color: #2563eb; margin-right: 8px;"></i> New Report';
-                        if (map) setTimeout(() => map.invalidateSize(), 50); // fix leaflet rendering
-                    } else if (item.dataset.tab === 'history') {
-                        headerTitle.innerHTML = '<i class="fas fa-clock" style="color: #2563eb; margin-right: 8px;"></i> Report History';
-                    } else if (item.dataset.tab === 'settings') {
-                        headerTitle.innerHTML = '<i class="fas fa-cog" style="color: #2563eb; margin-right: 8px;"></i> App Settings';
-                    }
-                });
+            // Bottom Navigation Logic
+            navReport.addEventListener('click', () => {
+                navReport.classList.add('active');
+                navSettings.classList.remove('active');
+                reportView.style.display = 'flex';
+                settingsView.style.display = 'none';
+                headerTitle.innerHTML = '<i class="fas fa-file-alt" style="margin-right:8px; color:#2563eb;"></i>New Report';
+                if (map) map.invalidateSize();
             });
 
-            // We will move sign out to the settings page eventually. For now, a helper function.
-            window.performSignOut = function () {
+            navSettings.addEventListener('click', () => {
+                navSettings.classList.add('active');
+                navReport.classList.remove('active');
+                settingsView.style.display = 'block';
+                reportView.style.display = 'none';
+                headerTitle.innerHTML = '<i class="fas fa-cog" style="margin-right:8px; color:#2563eb;"></i>Settings';
+            });
+
+            // Settings Logic
+            settingAutoCamera.addEventListener('change', (e) => {
+                saveSetting('autoCamera', e.target.checked);
+            });
+
+            signoutBtn.addEventListener('click', () => {
                 appScreen.classList.add('hidden');
                 signinScreen.classList.remove('hidden');
                 resetAppUI();
-                // Reset to default tab
-                navItems[0].click();
-            };
-
-            document.getElementById('settings-signout-btn').addEventListener('click', window.performSignOut);
-
-            // --- IndexedDB Settings Persistence ---
-            const dbName = 'ReporterSettingsDB';
-            const storeName = 'settings';
-
-            function openDB() {
-                return new Promise((resolve, reject) => {
-                    const request = indexedDB.open(dbName, 1);
-                    request.onupgradeneeded = (e) => {
-                        e.target.result.createObjectStore(storeName);
-                    };
-                    request.onsuccess = () => resolve(request.result);
-                    request.onerror = () => reject(request.error);
-                });
-            }
-
-            async function getSetting(key) {
-                try {
-                    const db = await openDB();
-                    return new Promise((resolve, reject) => {
-                        const tx = db.transaction(storeName, 'readonly');
-                        const store = tx.objectStore(storeName);
-                        const req = store.get(key);
-                        req.onsuccess = () => resolve(req.result);
-                        req.onerror = () => reject(req.error);
-                    });
-                } catch (e) {
-                    console.error("IndexedDB error", e);
-                    return null;
-                }
-            }
-
-            async function setSetting(key, value) {
-                try {
-                    const db = await openDB();
-                    return new Promise((resolve, reject) => {
-                        const tx = db.transaction(storeName, 'readwrite');
-                        const store = tx.objectStore(storeName);
-                        const req = store.put(value, key);
-                        req.onsuccess = () => resolve();
-                        req.onerror = () => reject(req.error);
-                    });
-                } catch (e) {
-                    console.error("IndexedDB error", e);
-                }
-            }
-
-            // Init Settings UI
-            const autoFsToggle = document.getElementById('auto-fs-toggle');
-
-            getSetting('autoFullscreenCamera').then(val => {
-                if (val !== undefined) autoFsToggle.checked = val;
-            });
-
-            autoFsToggle.addEventListener('change', (e) => {
-                setSetting('autoFullscreenCamera', e.target.checked);
             });
 
             // --- Map Logic ---
@@ -1113,7 +1016,7 @@
             const resizeObserver = new ResizeObserver(() => {
                 if (map) map.invalidateSize();
             });
-            resizeObserver.observe(document.getElementById('app-content'));
+            resizeObserver.observe(document.getElementById('report-view'));
 
             function setToCurrentLocation() {
                 if (!navigator.geolocation) {
@@ -1326,13 +1229,6 @@
             }
 
             // --- Init & Reset ---
-            window.addEventListener('load', () => {
-                const preloader = document.getElementById('preloader');
-                setTimeout(() => {
-                    preloader.classList.add('hidden');
-                }, 800); // Ensure it shows for at least a brief moment
-            });
-
             async function initApp() {
                 initMap();
                 await startCamera();

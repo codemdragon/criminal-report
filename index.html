@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Mobile Reporter · Map & Media</title>
+    <title>Crime Reporter · Map & Media</title>
 
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#1a1e2b">
@@ -874,7 +874,7 @@
         <div id="signin-screen" class="screen">
             <div class="signin-card">
                 <i class="fas fa-compass" style="font-size: 3rem; color: #2563eb; margin-bottom: 10px;"></i>
-                <h2>Reporter PWA</h2>
+                <h2>Crime Reporter</h2>
                 <p style="color:#64748b; margin-bottom: 24px; font-weight: 500;">Location & Media Capture</p>
                 <input class="signin-input" type="text" placeholder="Username" value="demo_user" id="mock-username">
                 <input class="signin-input" type="password" placeholder="Password" value="password">
@@ -1330,7 +1330,9 @@
             function bindStreamToVideoElements(stream) {
                 window.localStream = stream;
                 videoElement.srcObject = stream;
-                fsVideoElement.srcObject = stream;
+                if (fsCameraView.classList.contains('active')) {
+                    fsVideoElement.srcObject = stream;
+                }
             }
 
             function stopCamera() {
@@ -1349,11 +1351,13 @@
             // --- Fullscreen View ---
             function openFullscreen() {
                 fsCameraView.classList.add('active');
+                if (cameraStream) fsVideoElement.srcObject = cameraStream;
             }
 
             function closeFullscreen() {
                 fsCameraView.classList.remove('active');
                 if (isRecording) stopRecording(); // Stop if user closes while recording
+                fsVideoElement.srcObject = null;
             }
 
             // --- Media Capture ---

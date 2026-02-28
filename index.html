@@ -598,6 +598,211 @@
             overflow-y: auto;
         }
 
+        /* Multiple Media Gallery */
+        .media-gallery {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+        .media-gallery::-webkit-scrollbar {
+            display: none;
+            /* Safari/Chrome */
+        }
+
+        .media-item-container {
+            position: relative;
+            flex: 0 0 85%;
+            aspect-ratio: 4/3;
+            border-radius: 20px;
+            overflow: hidden;
+            scroll-snap-align: center;
+            background: #1a1f2b;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .media-item-container video,
+        .media-item-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .remove-media-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .type-badge {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+            z-index: 10;
+        }
+
+        /* Description & Categories */
+        .report-textarea {
+            width: 100%;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 120px;
+            margin-bottom: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .report-textarea:focus {
+            border-color: #3b82f6;
+            background: white;
+        }
+
+        .category-dropdown {
+            position: relative;
+            width: 100%;
+        }
+
+        .dropdown-toggle {
+            width: 100%;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            color: #334155;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            margin-top: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            z-index: 20;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .dropdown-menu.show {
+            display: flex;
+        }
+
+        .dropdown-search {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        .dropdown-search input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            outline: none;
+            font-size: 0.95rem;
+        }
+
+        .dropdown-list {
+            max-height: 220px;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .category-item {
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .category-item:hover {
+            background: #f1f5f9;
+        }
+
+        .category-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #2563eb;
+            cursor: pointer;
+        }
+
+        .category-label {
+            font-size: 0.95rem;
+            color: #1e293b;
+            flex: 1;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .selected-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .tag {
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tag i {
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .tag i:hover {
+            opacity: 1;
+        }
+
         .settings-card {
             background: white;
             border-radius: 20px;
@@ -703,7 +908,9 @@
                                 <div class="preview-overlay" id="live-indicator">LIVE</div>
                             </div>
 
-                            <div id="captured-preview" style="display: none;" class="camera-preview"></div>
+                            <div id="captured-preview" class="media-gallery" style="display: none;">
+                                <!-- Captured media injected here -->
+                            </div>
 
                             <div class="media-actions">
                                 <button class="btn" id="take-photo-btn"><i class="fas fa-camera-retro"></i>
@@ -715,7 +922,8 @@
                                 <button class="btn" id="fs-open-btn"><i class="fas fa-expand"></i> Fullscreen</button>
                                 <button class="btn" id="flip-camera-btn"><i class="fas fa-camera-rotate"></i>
                                     Flip</button>
-                                <button class="btn" id="clear-media-btn"><i class="fas fa-trash-can"></i> Clear</button>
+                                <button class="btn" id="clear-media-btn" style="color:#ef4444;"><i
+                                        class="fas fa-trash-can"></i> Clear All</button>
                             </div>
                         </div>
 
@@ -736,11 +944,39 @@
 
                             <div class="location-controls">
                                 <button class="location-btn" id="use-my-location"><i class="fas fa-crosshairs"></i>
-                                    Locate
-                                    Me</button>
+                                    Locate Me</button>
                                 <button class="location-btn" id="reset-map-center"><i class="fas fa-globe"></i>
                                     Reset</button>
                             </div>
+                        </div>
+
+                        <!-- REPORT DETAILS (TEXT & CATEGORIZATION) -->
+                        <div class="card full-width">
+                            <div class="card-title">
+                                <i class="fas fa-align-left"></i> Report Details
+                            </div>
+
+                            <textarea id="report-description" class="report-textarea"
+                                placeholder="Describe the incident, suspicious activity, or any relevant details here..."></textarea>
+
+                            <div class="category-dropdown" id="category-dropdown-container">
+                                <div class="dropdown-toggle" id="dropdown-toggle-btn">
+                                    <span><i class="fas fa-tags" style="color:#94a3b8; margin-right:8px;"></i> Select
+                                        Categories</span>
+                                    <i class="fas fa-chevron-down" style="color:#94a3b8;"></i>
+                                </div>
+
+                                <div class="dropdown-menu" id="dropdown-menu">
+                                    <div class="dropdown-search">
+                                        <input type="text" id="category-search" placeholder="Search categories...">
+                                    </div>
+                                    <div class="dropdown-list" id="category-list">
+                                        <!-- Checkboxes injected by JS -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="selected-tags" id="selected-tags-container"></div>
                         </div>
 
                         <!-- SUBMIT / DOWNLOAD -->
@@ -890,6 +1126,14 @@
             // Settings Elements
             const settingAutoCamera = document.getElementById('setting-auto-camera');
 
+            // Categorization Elements
+            const dropdownToggleBtn = document.getElementById('dropdown-toggle-btn');
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            const categorySearch = document.getElementById('category-search');
+            const categoryList = document.getElementById('category-list');
+            const selectedTagsContainer = document.getElementById('selected-tags-container');
+            const reportDescription = document.getElementById('report-description');
+
             // Camera UI (Inline)
             const videoElement = document.getElementById('camera-stream');
             const liveIndicator = document.getElementById('live-indicator');
@@ -919,9 +1163,11 @@
             // --- State ---
             let map, marker;
             let currentLat = 51.505, currentLng = -0.09;
-            let mediaBlob = null;
-            let mediaType = null;
-            let mediaPreviewUrl = null;
+            let hasAutoLocated = false;
+
+            // Multiple Media State
+            let capturedMedia = []; // Array of { blob, type, url, id }
+
             let isRecording = false;
             let mediaRecorder = null;
             let recordedChunks = [];
@@ -1018,12 +1264,14 @@
             });
             resizeObserver.observe(document.getElementById('report-view'));
 
-            function setToCurrentLocation() {
+            function setToCurrentLocation(silent = false) {
                 if (!navigator.geolocation) {
-                    alert('Geolocation not supported by this browser.');
+                    if (!silent) alert('Geolocation not supported by this browser.');
                     return;
                 }
-                useMyLocationBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
+
+                if (!silent) useMyLocationBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
+
                 navigator.geolocation.getCurrentPosition(
                     (pos) => {
                         currentLat = pos.coords.latitude;
@@ -1170,67 +1418,204 @@
             }
 
             function showCapturedMedia(blob, type) {
-                mediaBlob = blob;
-                mediaType = type;
-                if (mediaPreviewUrl) URL.revokeObjectURL(mediaPreviewUrl);
-                mediaPreviewUrl = URL.createObjectURL(blob);
+                const url = URL.createObjectURL(blob);
+                const id = 'media_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
 
-                capturedPreviewDiv.style.display = 'block';
-                capturedPreviewDiv.innerHTML = '';
-
-                if (type === 'image') {
-                    const img = document.createElement('img');
-                    img.src = mediaPreviewUrl;
-                    capturedPreviewDiv.appendChild(img);
-                    liveIndicator.innerText = 'PHOTO';
-                } else if (type === 'video') {
-                    const vid = document.createElement('video');
-                    vid.src = mediaPreviewUrl;
-                    vid.controls = true;
-                    vid.autoplay = false;
-                    capturedPreviewDiv.appendChild(vid);
-                    liveIndicator.innerText = 'VIDEO';
-                }
-                cameraLiveContainer.style.display = 'none';
+                capturedMedia.push({ blob, type, url, id });
+                renderCapturedGallery();
 
                 // Auto-close fullscreen if photo was taken there
                 closeFullscreen();
             }
 
-            function clearMedia() {
-                capturedPreviewDiv.style.display = 'none';
+            function renderCapturedGallery() {
+                if (capturedMedia.length === 0) {
+                    capturedPreviewDiv.style.display = 'none';
+                    capturedPreviewDiv.innerHTML = '';
+                    cameraLiveContainer.style.display = 'block';
+                    liveIndicator.innerText = 'LIVE';
+                    return;
+                }
+
+                cameraLiveContainer.style.display = 'none';
+                capturedPreviewDiv.style.display = 'flex';
                 capturedPreviewDiv.innerHTML = '';
-                cameraLiveContainer.style.display = 'block';
-                liveIndicator.innerText = 'LIVE';
-                mediaBlob = null;
-                mediaType = null;
-                if (mediaPreviewUrl) {
-                    URL.revokeObjectURL(mediaPreviewUrl);
-                    mediaPreviewUrl = null;
+
+                capturedMedia.forEach((media, index) => {
+                    const container = document.createElement('div');
+                    container.className = 'media-item-container';
+
+                    // Remove button
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'remove-media-btn';
+                    removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    removeBtn.onclick = () => removeMediaItem(media.id);
+                    container.appendChild(removeBtn);
+
+                    // Type Badge
+                    const badge = document.createElement('div');
+                    badge.className = 'type-badge';
+                    badge.innerText = media.type === 'image' ? 'PHOTO' : 'VIDEO';
+                    container.appendChild(badge);
+
+                    // Media Element
+                    if (media.type === 'image') {
+                        const img = document.createElement('img');
+                        img.src = media.url;
+                        container.appendChild(img);
+                    } else if (media.type === 'video') {
+                        const vid = document.createElement('video');
+                        vid.src = media.url;
+                        vid.controls = true;
+                        vid.playsinline = true;
+                        container.appendChild(vid);
+                    }
+
+                    capturedPreviewDiv.appendChild(container);
+                });
+            }
+
+            function removeMediaItem(id) {
+                const index = capturedMedia.findIndex(m => m.id === id);
+                if (index > -1) {
+                    URL.revokeObjectURL(capturedMedia[index].url);
+                    capturedMedia.splice(index, 1);
+                    renderCapturedGallery();
                 }
             }
 
-            // --- Output / Download ---
-            function downloadMedia() {
-                if (!mediaBlob) {
-                    alert('Please capture a photo or video first.');
+            function clearMedia() {
+                capturedMedia.forEach(m => URL.revokeObjectURL(m.url));
+                capturedMedia = [];
+                renderCapturedGallery();
+            }
+
+            // --- Categorization Logic ---
+            const ALL_CATEGORIES = [
+                "Vandalism", "Theft", "Assault", "Disturbance",
+                "Suspicious Activity", "Traffic Violation", "Lost Property",
+                "Medical Emergency", "Fire", "Other"
+            ];
+            let selectedCategories = new Set();
+
+            function renderCategoryList(filterText = "") {
+                categoryList.innerHTML = '';
+                const filtered = ALL_CATEGORIES.filter(c => c.toLowerCase().includes(filterText.toLowerCase()));
+
+                if (filtered.length === 0) {
+                    categoryList.innerHTML = '<div style="padding:10px 16px; color:#94a3b8; font-size:0.9rem;">No categories found</div>';
                     return;
                 }
-                const ext = mediaType === 'image' ? '.jpg' : '.webm';
-                const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-                const filename = `Report_${currentLat.toFixed(4)}_${currentLng.toFixed(4)}_${timestamp}${ext}`;
 
+                filtered.forEach(cat => {
+                    const item = document.createElement('label');
+                    item.className = 'category-item';
+
+                    const cb = document.createElement('input');
+                    cb.type = 'checkbox';
+                    cb.value = cat;
+                    cb.checked = selectedCategories.has(cat);
+                    cb.onchange = (e) => {
+                        if (e.target.checked) selectedCategories.add(cat);
+                        else selectedCategories.delete(cat);
+                        renderSelectedTags();
+                    };
+
+                    const span = document.createElement('span');
+                    span.className = 'category-label';
+                    span.innerText = cat;
+
+                    item.appendChild(cb);
+                    item.appendChild(span);
+                    categoryList.appendChild(item);
+                });
+            }
+
+            function renderSelectedTags() {
+                selectedTagsContainer.innerHTML = '';
+                selectedCategories.forEach(cat => {
+                    const tag = document.createElement('div');
+                    tag.className = 'tag';
+                    tag.innerHTML = `<span>${cat}</span><i class="fas fa-times" onclick="removeCategory('${cat}')"></i>`;
+                    selectedTagsContainer.appendChild(tag);
+                });
+            }
+
+            window.removeCategory = (cat) => {
+                selectedCategories.delete(cat);
+                renderSelectedTags();
+                renderCategoryList(categorySearch.value);
+            };
+
+            dropdownToggleBtn.addEventListener('click', () => {
+                dropdownMenu.classList.toggle('show');
+                if (dropdownMenu.classList.contains('show')) categorySearch.focus();
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!document.getElementById('category-dropdown-container').contains(e.target)) {
+                    dropdownMenu.classList.remove('show');
+                }
+            });
+
+            categorySearch.addEventListener('input', (e) => {
+                renderCategoryList(e.target.value);
+            });
+
+            // --- Output / Download ---
+            async function downloadMedia() {
+                if (capturedMedia.length === 0 && reportDescription.value.trim() === '' && selectedCategories.size === 0) {
+                    alert('Please capture media or provide a description before saving.');
+                    return;
+                }
+
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                const baseFilename = `Report_${currentLat.toFixed(4)}_${currentLng.toFixed(4)}_${timestamp}`;
+                downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+                // 1. Generate text report file
+                let reportText = `INCIDENT REPORT\n`;
+                reportText += `Date/Time: ${new Date().toLocaleString()}\n`;
+                reportText += `Location: ${currentLat.toFixed(5)}, ${currentLng.toFixed(5)}\n`;
+                reportText += `Categories: ${Array.from(selectedCategories).join(', ') || 'None specified'}\n`;
+                reportText += `\nDESCRIPTION:\n${reportDescription.value || 'No description provided.'}\n`;
+
+                const textBlob = new Blob([reportText], { type: 'text/plain' });
+                triggerDownload(textBlob, `${baseFilename}_details.txt`);
+
+                // 2. Download Media Files (with slight delay between triggers to avoid browser blocks)
+                for (let i = 0; i < capturedMedia.length; i++) {
+                    const m = capturedMedia[i];
+                    const ext = m.type === 'image' ? '.jpg' : '.webm';
+                    triggerDownload(m.blob, `${baseFilename}_media${i + 1}${ext}`);
+                    await new Promise(r => setTimeout(r, 500)); // 500ms delay
+                }
+
+                downloadBtn.innerHTML = '<i class="fas fa-check"></i> Saved';
+                setTimeout(() => {
+                    downloadBtn.innerHTML = '<i class="fas fa-download"></i> Save & Download Report';
+                }, 2000);
+            }
+
+            function triggerDownload(blob, filename) {
                 const link = document.createElement('a');
-                link.href = URL.createObjectURL(mediaBlob);
+                link.href = URL.createObjectURL(blob);
                 link.download = filename;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(link.href), 1000);
             }
 
             // --- Init & Reset ---
             async function initApp() {
+                renderCategoryList();
                 initMap();
+                if (!hasAutoLocated) {
+                    setToCurrentLocation(true); // Silent auto-location
+                    hasAutoLocated = true;
+                }
                 await startCamera();
                 clearMedia();
             }
@@ -1238,6 +1623,10 @@
             function resetAppUI() {
                 clearMedia();
                 if (map) resetMapDefault();
+                reportDescription.value = '';
+                selectedCategories.clear();
+                renderSelectedTags();
+                renderCategoryList();
                 stopCamera();
                 closeFullscreen();
             }
